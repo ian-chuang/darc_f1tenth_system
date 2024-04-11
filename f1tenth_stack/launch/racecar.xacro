@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<!-- A simple model of the racecar for rviz -->
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="racecar">
+
+
+  <link name="laser"/>
+  <link name="base"/>
+
+  <joint name="laser_to_base" type="fixed">
+    <parent link="laser"/>
+    <child link="base"/>
+    <origin xyz="-0.27 0.0 -0.11"/>
+  </joint>
+
+
+</robot>

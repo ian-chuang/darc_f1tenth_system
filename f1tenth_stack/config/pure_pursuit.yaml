@@ -1,0 +1,22 @@
+pure_pursuit:
+  ros__parameters:
+    waypoints_path: "/home/car1/f1tenth_ws/src/f1tenth_system/f1tenth_stack/racelines/test_map.csv"
+    odom_topic: "pf/pose/odom"
+    car_refFrame: "base"
+    global_refFrame: "map"
+    drive_topic: "/drive"
+    rviz_current_waypoint_topic: "/current_waypoint"
+    rviz_lookahead_waypoint_topic: "/lookahead_waypoint"
+
+    # Pure Pursuit Parameters
+    # Lookahead is computed using the following: lookahead = min(max(min_lookahead, max_lookahead * curr_velocity / lookahead_ratio), max_lookahead);
+    min_lookahead: 1.5
+    max_lookahead: 4.0 # lookahead when the car is going around max velocity
+    lookahead_ratio: 8.0 # approximately the max velocity
+    K_p: 0.2
+    steering_limit: 25.0
+    velocity_percentage: 1.0 # the limit, can only do 1 lap with clean tires
+
+waypoint_visualizer_node:
+  ros__parameters:
+    waypoints_path: "/home/car1/f1tenth_ws/src/f1tenth_system/f1tenth_stack/racelines/test_map.csv"
