@@ -1,6 +1,6 @@
 pure_pursuit:
   ros__parameters:
-    waypoints_path: "/home/car1/f1tenth_ws/src/f1tenth_system/f1tenth_stack/racelines/test_map.csv"
+    waypoints_path: "/home/car1/f1tenth_ws/src/darc_f1tenth_system/f1tenth_stack/racelines/20240411_darc_map.csv"
     odom_topic: "pf/pose/odom"
     car_refFrame: "base"
     global_refFrame: "map"
@@ -19,4 +19,4 @@ pure_pursuit:
 
 waypoint_visualizer_node:
   ros__parameters:
-    waypoints_path: "/home/car1/f1tenth_ws/src/f1tenth_system/f1tenth_stack/racelines/test_map.csv"
+    waypoints_path: "/home/car1/f1tenth_ws/src/darc_f1tenth_system/f1tenth_stack/racelines/20240411_darc_map.csv"
