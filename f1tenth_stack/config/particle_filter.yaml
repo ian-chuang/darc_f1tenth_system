@@ -1,7 +1,7 @@
 particle_filter:
   ros__parameters:
     # map parameters (not used in particle_filter)
-    map_yaml_path: "/home/car1/f1tenth_ws/src/darc_f1tenth_system/f1tenth_stack/maps/20240411_darc_map.yaml"
+    map_yaml_path: "/home/car1/f1tenth_ws/src/darc_f1tenth_system/f1tenth_stack/maps/struggle_screen_recording.yaml"
 
     # topic names
     scan_topic: '/scan'
