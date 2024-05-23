@@ -125,6 +125,11 @@ def generate_launch_description():
         executable='tf_publisher',
         name='tf_publisher'
     )
+    arduino_node = Node(
+        package='darc_arduino',
+        executable='darc_arduino',
+        name='darc_arduino'
+    )
 
     # finalize
     ld.add_action(joy_node)
@@ -136,6 +141,7 @@ def generate_launch_description():
     ld.add_action(urg_node)
     ld.add_action(ackermann_mux_node)
     ld.add_action(tf_publisher_node)
+    ld.add_action(arduino_node)
 
 
     return ld

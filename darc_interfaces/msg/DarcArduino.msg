@@ -1,0 +1,8 @@
+std_msgs/Header header
+float64 front_left_wheel_velocity
+float64 front_right_wheel_velocity
+float64 rear_left_wheel_velocity
+float64 rear_right_wheel_velocity
+float64 accelerometer_x
+float64 accelerometer_y
+float64 accelerometer_z
