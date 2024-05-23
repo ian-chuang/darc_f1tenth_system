@@ -3,6 +3,7 @@ from darc_interfaces.msg import DarcArduino
 import serial
 import struct
 
+
 # Faster pyserial readline
 # https://github.com/pyserial/pyserial/issues/216#issuecomment-369414522
 class ReadLine:
@@ -12,7 +13,7 @@ class ReadLine:
     
     def readline(self):
         i = self.buf.find(b"\n")
-        if i >= 1 and self.buf[i-1] == b"\r":
+        if i >= 0:
             r = self.buf[:i+1]
             self.buf = self.buf[i+1:]
             return r
@@ -25,12 +26,13 @@ class ReadLine:
                 return bytearray()
             
             i = data.find(b"\n")
-            if i >= 1 and self.buf[i-1] == b"\r":
+            if i >= 0:
                 r = self.buf + data[:i+1]
                 self.buf[0:] = data[i+1:]
                 return r
             else:
                 self.buf.extend(data)
+
                 
 def main(args=None):
     rclpy.init(args=args)
@@ -51,29 +53,24 @@ def main(args=None):
     
     try:
         while rclpy.ok():
-            data = ser.readline()
-            #print("Raw data:", data)  # See exactly what is being received        
-            if data[0:1] != b'\xAA':         
-                #   print("START BIT NOT FOUND", data[0:1])
-                continue
-            if data[-2:] != b'\r\n':
-                #  print("END BIT NOT FOUND", data[-2:])
-                continue
-            if len(data) != 31:
-                # print("DATA LENGTH WRONG", len(data))
-                continue
             
-            msg.header.stamp = node.get_clock().now().to_msg()
-            msg.accelerometer_x = struct.unpack('<f', data[1:5])[0]
-            msg.accelerometer_y = struct.unpack('<f', data[5:9])[0]
-            msg.accelerometer_z = struct.unpack('<f', data[9:13])[0]
-            msg.front_left_wheel_velocity = struct.unpack('<f', data[17:21])[0]
-            msg.front_right_wheel_velocity = struct.unpack('<f', data[25:29])[0]
-            msg.rear_left_wheel_velocity = struct.unpack('<f', data[21:25])[0]
-            msg.rear_right_wheel_velocity = struct.unpack('<f', data[13:17])[0] 
+            try:
+                data = ser.readline().decode('utf-8')
+                data = [float(x) for x in data.split(',')[:7]]
             
-            publisher.publish(msg)
-
+                msg.header.stamp = node.get_clock().now().to_msg()
+                msg.accelerometer_x = data[0]
+                msg.accelerometer_y = data[1]
+                msg.accelerometer_z = data[2]
+                msg.front_left_wheel_velocity = data[4]
+                msg.front_right_wheel_velocity = data[6]
+                msg.rear_left_wheel_velocity = data[5]
+                msg.rear_right_wheel_velocity = data[3]
+            
+                publisher.publish(msg)
+                
+            except Exception as e:
+                pass
 
     except KeyboardInterrupt:
         print("Exiting program")
