@@ -121,19 +121,35 @@
   byte* bytesC = (byte*)&c;
   byte* bytesD = (byte*)&d;
 
-  Serial.write(0xAA); // Start byte
+  // Serial.write(0xAA); // Start byte
 
-  // Sending x-axis acceleration
-  Serial.write(bytesX, sizeof(float));
-  // Sending y-axis acceleration
-  Serial.write(bytesY, sizeof(float));
-  // Sending z-axis acceleration
-  Serial.write(bytesZ, sizeof(float));
-  // sending sensors
-  Serial.write(bytesA, sizeof(float));
-  Serial.write(bytesB, sizeof(float));
-  Serial.write(bytesC, sizeof(float));
-  Serial.write(bytesD, sizeof(float));
+  // // Sending x-axis acceleration
+  // Serial.write(bytesX, sizeof(float));
+  // // Sending y-axis acceleration
+  // Serial.write(bytesY, sizeof(float));
+  // // Sending z-axis acceleration
+  // Serial.write(bytesZ, sizeof(float));
+  // // sending sensors
+  // Serial.write(bytesA, sizeof(float));
+  // Serial.write(bytesB, sizeof(float));
+  // Serial.write(bytesC, sizeof(float));
+  // Serial.write(bytesD, sizeof(float));
+  // Serial.println();
+
+  Serial.print(x, 5);
+  Serial.print(",");
+  Serial.print(y, 5);
+  Serial.print(",");
+  Serial.print(z, 5);
+  Serial.print(",");
+  Serial.print(a, 5);
+  Serial.print(",");
+  Serial.print(b, 5);
+  Serial.print(",");
+  Serial.print(c, 5);
+  Serial.print(",");
+  Serial.print(d, 5);
+  Serial.print(",");
   Serial.println();
   
 }
