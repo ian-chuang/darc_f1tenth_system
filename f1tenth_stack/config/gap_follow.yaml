@@ -3,8 +3,8 @@ gap_follow:
     drive_topic: "/drive"
     lidarscan_topic: "/scan"
     decision_topic: "/use_obs_avoid"
-    index_topic: "/car_spline_index"
-    velocity_file_name: "/home/car1/f1tenth_ws/src/darc_f1tenth_system/f1tenth_stack/racelines/struggle_screen_recording.csv"
+    pure_pursuit_velocity_topic: "pure_pursuit_velocity"
+    velocity_file_name: "/home/car1/f1tenth_ws/src/darc_f1tenth_system/f1tenth_stack/racelines/video_map.csv"
     window_size: 3
     max_range_threshold: 10.0
     max_drive_range_threshold: 5.0
@@ -12,5 +12,5 @@ gap_follow:
     angle_cutoff: 1.5
     disp_threshold: 0.4
     bubble_dist_threshold: 6.0
-    velocity_scaling_factor: 0.3
-    minimum_speed: 0.8
+    velocity_scaling_factor: 0.5
+    minimum_speed: 0.5

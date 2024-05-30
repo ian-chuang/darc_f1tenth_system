@@ -66,7 +66,7 @@ def generate_launch_description():
         package='rviz2',
         executable='rviz2',
         name='rviz',
-        arguments=['-d', os.path.join(get_package_share_directory('f1tenth_stack'), 'launch', 'rviz.rviz')]
+        arguments=['-d', os.path.join(get_package_share_directory('f1tenth_stack'), 'launch', 'particle_filter.rviz')]
     )
     map_server_node = Node(
         package='nav2_map_server',
@@ -86,11 +86,19 @@ def generate_launch_description():
                     {'autostart': True},
                     {'node_names': ['map_server']}]
     )
+    
+    lidar_odom_to_velocity_node = Node(
+        package="darc_tools",
+        executable='velocity_calculator',
+        name='velocity_calculator',
+        output='screen',
+    )
 
     # finalize
     ld.add_action(rviz_node)
     ld.add_action(nav_lifecycle_node)
     ld.add_action(map_server_node)
     ld.add_action(pf_node)
+    ld.add_action(lidar_odom_to_velocity_node)
 
     return ld

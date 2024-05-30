@@ -7,7 +7,6 @@ Panels:
         - /Global Options1
         - /Status1
         - /Map1
-        - /Map1/Status1
         - /Map1/Topic1
         - /Map1/Update Topic1
       Splitter Ratio: 0.5
@@ -104,18 +103,6 @@ Visualization Manager:
         Reliability Policy: Reliable
         Value: /pf/pose/odom
       Value: true
-    - Class: rviz_default_plugins/Marker
-      Enabled: true
-      Name: Marker
-      Namespaces:
-        "": true
-      Topic:
-        Depth: 5
-        Durability Policy: Volatile
-        History Policy: Keep Last
-        Reliability Policy: Reliable
-        Value: /lookahead_waypoint
-      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -159,7 +146,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 15.109814643859863
+      Distance: 24.475399017333984
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -174,10 +161,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.6703979969024658
+      Pitch: 0.3503981828689575
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 0.46539804339408875
+      Yaw: 5.708583831787109
     Saved: ~
 Window Geometry:
   Displays:
@@ -193,5 +180,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1200
-  X: 672
-  Y: 89
+  X: 72
+  Y: 60
