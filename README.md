@@ -19,8 +19,12 @@ cd ~/f1tenth_ws/src
 
 # Clone the code for running algorithms
 git clone https://github.com/ian-chuang/f1tenth_gym_ros.git
+cd ~/f1tenth_ws/src/f1tenth_gym_ros
+git submodule init
+git submodule update
 
 # Clone driver and configuration files for running on the real car
+cd ~/f1tenth_ws/src
 git clone https://github.com/ian-chuang/darc_f1tenth_system.git
 
 # Install ROS 2 dependencies
