@@ -103,6 +103,7 @@ You'll need to modify the `.yaml` files in `f1tenth_stack/config` to properly ru
 
 - `particle_filter.yaml`: Change `map_yaml_path` to the path of your map `.yaml` file.
 - `pure_pursuit.yaml`: Change `trajectory` to the path of your raceline CSV.
+- `obs_detect.yaml`: Change `spline_file_name` to the path of your raceline CSV.
 
 ## Running Autonomous Control
 

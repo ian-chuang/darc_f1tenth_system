@@ -1,6 +1,6 @@
 pure_pursuit:
   ros__parameters:
-    trajectory_csv: "/home/car1/f1tenth_ws/src/darc_f1tenth_system/f1tenth_stack/racelines/video_map.csv"
+    trajectory_csv: "/home/car1/f1tenth_ws/src/darc_f1tenth_system/f1tenth_stack/racelines/james.csv"
     pp_steer_L_fast: 2.5
     pp_steer_L_slow: 1.8
     kp_fast: 0.35
