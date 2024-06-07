@@ -1,121 +1,147 @@
-# f1tenth_system
+# darc_f1tenth_system
 
-Drivers onboard f1tenth race cars. This branch is under development for migration to ROS2. See the [documentation of F1TENTH](https://f1tenth.readthedocs.io/en/foxy_test/getting_started/firmware/index.html) on how to get started.
+This repository contains drivers and configuration files for operating the UC Davis F1tenth Autonomous Race Car.
 
-## Deadman's switch
-On Logitech F-710 joysticks, the LB button is the deadman's switch for teleop, and the RB button is the deadman's switch for navigation. You can also remap buttons. See how on the readthedocs documentation.
+## Setup Instructions
 
-## Topics
+Follow the F1tenth instructions for initially setting up your car [here](https://f1tenth.org/build.html).
 
-### Topics that the driver stack subscribe to
-- `/drive`: Topic for autonomous navigation, uses `AckermannDriveStamped` messages.
+### Dependencies
 
-### Sensor topics published by the driver stack
-- `/scan`: Topic for `LaserScan` messages.
-- `/odom`: Topic for `Odometry` messages.
-- `/sensors/imu/raw`: Topic for `Imu` messages.
-- `/sensors/core`: Topic for telemetry data from the VESC
+For the UC Davis F1tenth, on the Jetson Nano, you need the following dependencies. Ensure you have followed the F1tenth Build instructions carefully and installed ROS 2 Foxy [here](https://docs.ros.org/en/foxy/Installation.html). Also, make sure to install NoMachine [here](https://www.nomachine.com/).
 
-## External Dependencies
+### Set Up Your f1tenth_ws
 
-1. ackermann_msgs [https://index.ros.org/r/ackermann_msgs/#foxy](https://index.ros.org/r/ackermann_msgs/#foxy).
-2. urg_node [https://index.ros.org/p/urg_node/#foxy](https://index.ros.org/p/urg_node/#foxy). This is the driver for Hokuyo LiDARs.
-3. joy [https://index.ros.org/p/joy/#foxy](https://index.ros.org/p/joy/#foxy). This is the driver for joysticks in ROS 2.
-4. teleop_tools  [https://index.ros.org/p/teleop_tools/#foxy](https://index.ros.org/p/teleop_tools/#foxy). This is the package for teleop with joysticks in ROS 2.
-5. vesc [GitHub - f1tenth/vesc at ros2](https://github.com/f1tenth/vesc/tree/ros2). This is the driver for VESCs in ROS 2.
-6. ackermann_mux [GitHub - f1tenth/ackermann_mux: Twist multiplexer](https://github.com/f1tenth/ackermann_mux). This is a package for multiplexing ackermann messages in ROS 2.
-<!-- 7. rosbridge_suite [https://index.ros.org/p/rosbridge_suite/#foxy-overview](https://index.ros.org/p/rosbridge_suite/#foxy-overview) This is a package that allows for websocket connection in ROS 2. -->
+```bash
+# Create your ROS 2 workspace
+mkdir -p ~/f1tenth_ws/src
+cd ~/f1tenth_ws/src
 
-## Package in this repo
+# Clone the code for running algorithms
+git clone https://github.com/ian-chuang/f1tenth_gym_ros.git
 
-1. f1tenth_stack: maintains the bringup launch and all parameter files
+# Clone driver and configuration files for running on the real car
+git clone https://github.com/ian-chuang/darc_f1tenth_system.git
 
-## Nodes launched in bringup
+# Install ROS 2 dependencies
+cd ~/f1tenth_ws
+sudo apt-get update
+rosdep install -i --from-path src --rosdistro foxy -y
+```
 
-1. joy
-2. joy_teleop
-3. ackermann_to_vesc_node
-4. vesc_to_odom_node
-5. vesc_driver_node
-6. urg_node
-7. ackermann_mux
+> **Warning**: We experienced issues with `rosdep install` where it wouldn't install the packages even though they were properly listed in the `package.xml`. If you encounter this, install the packages manually with `sudo apt-get install ros-foxy-<name-of-the-package>`.
 
-## Parameters and topics for dependencies
+### Install Particle Filter Dependency
 
-### vesc_driver
+```bash
+cd ~
+sudo pip install cython
+git clone https://github.com/f1tenth/range_libc
+cd range_libc/pywrapper
+./compile_with_cuda.sh  # On the car - compiles GPU ray casting methods
+```
 
-1. Parameters:
-   - duty_cycle_min, duty_cycle_max
-   - current_min, current_max
-   - brake_min, brake_max
-   - speed_min, speed_max
-   - position_min, position_max
-   - servo_min, servo_max
-2. Publishes to:
-   - sensors/core
-   - sensors/servo_position_command
-   - sensors/imu
-   - sensors/imu/raw
-3. Subscribes to:
-   - commands/motor/duty_cycle
-   - commands/motor/current
-   - commands/motor/brake
-   - commands/motor/speed
-   - commands/motor/position
-   - commands/servo/position
+### Build ROS 2 Workspace
 
-### ackermann_to_vesc
+```bash
+cd ~/f1tenth_ws
+colcon build
 
-1. Parameters:
-   - speed_to_erpm_gain
-   - speed_to_erpm_offset
-   - steering_angle_to_servo_gain
-   - steering_angle_to_servo_offset
-2. Publishes to:
-   - ackermann_cmd
-3. Subscribes to:
-   - commands/motor/speed
-   - commands/servo/position
+# Source ROS 2
+source /opt/ros/foxy/setup.bash && source ~/f1tenth_ws/install/setup.bash
 
-### vesc_to_odom
+# Optionally, add sourcing workspace to bashrc (so you don't have to call it every time)
+echo 'source /opt/ros/foxy/setup.bash && source ~/f1tenth_ws/install/setup.bash' >> ~/.bashrc
+```
 
-1. Parameters:
-   - odom_frame
-   - base_frame
-   - use_servo_cmd_to_calc_angular_velocity
-   - speed_to_erpm_gain
-   - speed_to_erpm_offset
-   - steering_angle_to_servo_gain
-   - steering_angle_to_servo_offset
-   - wheelbase
-   - publish_tf
-2. Publishes to:
-   - odom
-3. Subscribes to:
-   - sensors/core
-   - sensors/servo_position_command
+## Teleop Car Instructions
 
-### throttle_interpolator
+Open a terminal and start up the car with the command below. This will start up the VESC, LiDAR, and joystick control.
 
-1. Parameters:
-   - rpm_input_topic
-   - rpm_output_topic
-   - servo_input_topic
-   - servo_output_topic
-   - max_acceleration
-   - speed_max
-   - speed_min
-   - throttle_smoother_rate
-   - speed_to_erpm_gain
-   - max_servo_speed
-   - steering_angle_to_servo_gain
-   - servo_smoother_rate
-   - servo_max
-   - servo_min
-   - steering_angle_to_servo_offset
-2. Publishes to:
-   - topic described in rpm_output_topic
-   - topic described in servo_output_topic
-3. Subscribes to:
-   - topic described in rpm_input_topic
-   - topic described in servo_input_topic
+```bash
+ros2 launch f1tenth_stack bringup_launch.py
+```
+
+Control the car with the joystick. Hold down the LB button and use the left joystick for acceleration and the right joystick for steering.
+
+## SLAM Instructions
+
+There are a couple of prerequisites to get autonomous control working. First, you need a map with SLAM.
+
+1. Start up your car:
+
+    ```bash
+    ros2 launch f1tenth_stack bringup_launch.py
+    ```
+
+2. Open another terminal and run the command below:
+
+    ```bash
+    ros2 launch f1tenth_stack slam_launch.py
+    ```
+
+This will start an RViz window showing the SLAM map running. Drive the car around the race track and SLAM will automatically map the race track. Once you sufficiently map the entire track, save the map by clicking the "Save Map" button in RViz. This saves both the YAML and PGM file of the map in the folder you launched SLAM.
+
+## Raceline Optimization Instructions
+
+After running SLAM, you need to generate a raceline to go around the map. This process is CPU intensive, so use a laptop or computer other than the Jetson to run it.
+
+1. Clone the Raceline Optimization repository:
+
+    ```bash
+    git clone https://github.com/ian-chuang/Raceline-Optimization.git
+    ```
+
+2. Follow the instructions in the README file in that repository to generate your raceline CSV.
+
+## Setting Up Configuration Files
+
+1. Move the map SLAM generated to the `maps` folder in `f1tenth_stack/maps` (make sure it is the raw unmodified map).
+2. Move the raceline CSV to the `racelines` folder in `f1tenth_stack/racelines`.
+
+You'll need to modify the `.yaml` files in `f1tenth_stack/config` to properly run the car. The main things you need to change are:
+
+- `particle_filter.yaml`: Change `map_yaml_path` to the path of your map `.yaml` file.
+- `pure_pursuit.yaml`: Change `trajectory` to the path of your raceline CSV.
+
+## Running Autonomous Control
+
+To run autonomous control, it is recommended you use NoMachine to connect to the Jetson remotely so that you can control the car while it is disconnected from the monitor. When you disconnect the HDMI, make sure to replace the HDMI cord with the dummy HDMI plug connector. This fakes the HDMI connection and will allow NoMachine to stream the desktop.
+
+To connect to NoMachine, your computer and Jetson need to be connected to the same WiFi network. Campus WiFi has lots of protections and won't allow you to connect, so use the router in the lab instead. If you are having issues connecting to NoMachine, it could be because of a network setting issue. Because the LiDAR is connected through Ethernet and its fixed at IP `192.168.0.10`, it can mess with both the WiFi connection as well as the NoMachine connection. The workaround is to keep the LiDAR at `192.168.0.10` but set the static IP of both the laptop and Jetson Nano to be in the subnet of `192.168.1.XXX`. You might lose your internet connection, but NoMachine should work as long as both machines are on the same subnet of `255.255.255.0`.
+
+1. First, start up your car:
+
+    ```bash
+    ros2 launch f1tenth_stack bringup_launch.py
+    ```
+
+2. Open another terminal and run the command below:
+
+    ```bash
+    ros2 launch f1tenth_stack particle_filter_launch.py
+    ```
+
+This starts up the particle filter. You'll see RViz pop up showing a visualization of the map as well as the location of the particle filter odometry.
+
+> **Important**: The particle filter requires a good start pose estimate to work properly. Place the car on the race track and in RViz, set the approximate location of the real car in the simulation by first clicking the "2D Pose Estimate" button in RViz and then clicking and dragging on a location in the map to set the pose.
+
+3. Finally, launch the autonomous algorithm. Open another terminal and type:
+
+    ```bash
+    ros2 launch f1tenth_stack autonomous_launch.py
+    ```
+
+This will start up our autonomous control suite (pure pursuit, gap follow, obstacle detection). To run the car autonomously, hold down the RB button on the joystick and the car will start running autonomously.
+
+## Common Problems
+
+- If you get an error when you launch `ros2 launch bringup_launch.py` that the VESC dies, especially when you move the steering wheel back and forth, that means the battery is really low. Just replace or recharge your battery. Most issues can be traced back to a low battery.
+- If you are having WiFi and/or Bluetooth connection issues, your WiFi antenna might be broken. Try replacing it first.
+- Restarting the Jetson is always an option that sometimes works, as well as just rebuilding your ROS 2 workspace:
+
+    ```bash
+    cd ~/f1tenth_ws
+    rm -rf build install log
+    colcon build
+    ```
